@@ -11,7 +11,7 @@ using System;
 public class SpeechRecognitionREST : MonoBehaviour
 {
 
-    string subscriptionKey = "92457ef1f71447718ebaefa4e929231e";
+    string subscriptionKey = "b681a6431d8e4234a84f417fac5c8922";
     string token;
 
     [SerializeField] Text responseText;
@@ -36,7 +36,7 @@ public class SpeechRecognitionREST : MonoBehaviour
     {
         // Unity webforms do not handle the certificates required for https servers
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create
-            ("https://westus.api.cognitive.microsoft.com/sts/v1.0/issueToken");
+            ("https://westus.api.cognitive.microsoft.com/sts/v1.0/issuetoken");
         request.ContentType = "application/x-www-form-urlencoded";
         request.Method = "POST";
         request.Headers["Ocp-Apim-Subscription-Key"] = subscriptionKey;
@@ -56,7 +56,7 @@ public class SpeechRecognitionREST : MonoBehaviour
     {
         responseText.text = "Sending Audio";
         // Send the request to the service
-        string fetchUri = "https://westus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1";
+        string fetchUri = "https://westus.api.cognitive.microsoft.com/sts/v1.0/issuetoken";
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(fetchUri + "?language=en-US&format=detailed");
         request.ContentType = "application/x-www-form-urlencoded";
         request.Method = "POST";
@@ -110,8 +110,8 @@ public class SpeechRecognitionREST : MonoBehaviour
 
     public void Trigger()
     {
-        Authentication ();
-        //StartCoroutine(recordAudio());
+        //Authentication ();
+        StartCoroutine(recordAudio());
     }
 
     // Remaining functions adapted from: https://gist.github.com/darktable /2317063 
