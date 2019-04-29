@@ -14,10 +14,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Tests/TestDestScene.unity
     guid: c0c3916718f152b4593bdd60c7938b38
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Scenes/Week 10.unity
     guid: 05f82150ab683a84dbb30aea871c7700
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/Week 3.unity
     guid: a5ecd774ac35f55499c16de3bc42b551
+  - enabled: 0
+    path: Assets/_Scenes/Week 4.unity
+    guid: c6085d1aac59865419b5f6e52bee3bf7
+  - enabled: 0
+    path: Assets/_Scenes/Week 5/FlexibleController.unity
+    guid: a3208ac878caa244cb9b83923dda5d62
+  - enabled: 0
+    path: Assets/_Scenes/Week 5/VRWorld.unity
+    guid: 6393725523091af40ba7ccc3631f3167
   m_configObjects: {}

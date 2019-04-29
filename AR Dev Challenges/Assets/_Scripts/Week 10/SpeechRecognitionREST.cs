@@ -15,6 +15,8 @@ public class SpeechRecognitionREST : MonoBehaviour
     string token;
 
     [SerializeField] Text responseText;
+    [SerializeField] Text feedback;
+    [SerializeField] AudioClip soundClip;
 
     // length of any recording sent. 10s is the limit
     int recordDuration = 5;
@@ -36,7 +38,7 @@ public class SpeechRecognitionREST : MonoBehaviour
     {
         // Unity webforms do not handle the certificates required for https servers
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create
-            ("https://westus.api.cognitive.microsoft.com/sts/v1.0/issuetoken");
+            ("https://westus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1");
         request.ContentType = "application/x-www-form-urlencoded";
         request.Method = "POST";
         request.Headers["Ocp-Apim-Subscription-Key"] = subscriptionKey;
@@ -56,7 +58,7 @@ public class SpeechRecognitionREST : MonoBehaviour
     {
         responseText.text = "Sending Audio";
         // Send the request to the service
-        string fetchUri = "https://westus.api.cognitive.microsoft.com/sts/v1.0/issuetoken";
+        string fetchUri = "https://westus.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1";
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(fetchUri + "?language=en-US&format=detailed");
         request.ContentType = "application/x-www-form-urlencoded";
         request.Method = "POST";
@@ -86,9 +88,33 @@ public class SpeechRecognitionREST : MonoBehaviour
 
         var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-        responseText.text = "Response from service: " + responseString;
+        //responseText.text = "Response from service: " + responseString;
 
         Debug.Log("Response from service: " + responseString);
+        string result = resultParser(responseString);
+        responseText.text = "Your Answer: " + result;
+
+        if(result.IndexOf("Avada cadabra") != -1)
+        {
+            feedback.text = "Your enemies lie in dust!";
+            feedback.color = Color.green;
+            feedback.gameObject.SetActive(true);
+            StartCoroutine(PlaySound());
+        }
+        else
+        {
+            feedback.text = "Try Again";
+            feedback.color = Color.red;
+            feedback.gameObject.SetActive(true);
+        }
+    }
+
+    IEnumerator PlaySound()
+    {
+        yield return new WaitForSeconds(5);
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.clip = soundClip;
+        audioSource.Play();
     }
 
     private IEnumerator recordAudio()
@@ -180,5 +206,31 @@ public class SpeechRecognitionREST : MonoBehaviour
         datastring.CopyTo(bytesData, 36);
         Byte[] subChunk2 = BitConverter.GetBytes(samples * channels * 2);
         subChunk2.CopyTo(bytesData, 40);
+    }
+    
+    string resultParser(string input)
+    {
+        // String to be searched - "Display":"
+        string wordToBeFound = "Display";
+
+        // Get location of the word
+        int startLoc = input.IndexOf(wordToBeFound);
+        // Check if word exists in the input
+        if (startLoc != -1)
+        {
+            // Offset by three spaces to ignore quotations and colon and get the whole string
+            string temp = input.Substring(startLoc + 10);
+            Debug.Log("------First cut: " + temp);
+
+            // Check for the next location of '}'
+            int endLoc = temp.IndexOf("}");
+
+            // Cut the string to get the required string
+            string result = temp.Substring(0, endLoc-2);
+            Debug.Log("------Result: " + result);
+
+            return result;
+        }
+        return "Error";
     }
 }
