@@ -6,8 +6,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
 [Serializable]
-public class ControllerDetails
-{
+public class ControllerDetails {
+
     public string id;
     public float gyrox;
     public float gyroy;
@@ -32,7 +32,7 @@ public class ControllerDetails
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream();
         bf.Serialize(ms, this);
-        return ms.ToArray();
+        return ms.ToArray ();
     }
 
     public static ControllerDetails deserialize(byte[] b)

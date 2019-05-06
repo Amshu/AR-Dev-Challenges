@@ -7,8 +7,7 @@ using System;
 
 public class DatagramCommunication
 {
-    private int port = 3000;
-    private string hostAddress = "144.132.50.217";
+    private int port = 8081;
     private UdpClient udpClient;
     private ControllerDetails lastController;
     private bool controlValid = false;
@@ -20,8 +19,8 @@ public class DatagramCommunication
         udpClient.BeginReceive(new AsyncCallback(udpReceive), null);
     }
 
-    // Retrieve the most recently received controller details
-    public ControllerDetails receiveControllerDetails()
+    // Retrieve the most recently received controller details. 
+    public ControllerDetails receiveControllerDetails ()
     {
         if (controlValid)
         {
@@ -31,23 +30,23 @@ public class DatagramCommunication
         return null;
     }
 
-    // Wait for a new message to arrive and set that as the last message
-    private void udpReceive(IAsyncResult res)
+    // Wait for a new message to arrive, and set that as the last message received. 
+    private void udpReceive (IAsyncResult res)
     {
         IPEndPoint from = new IPEndPoint(0, 0);
-        byte[] buffer = udpClient.Receive(ref from);
+        byte [] buffer = udpClient.Receive(ref from);
 
-        ControllerDetails details = ControllerDetails.deserialize(buffer);
+        ControllerDetails details = ControllerDetails.deserialize (buffer);
         lastController = details;
         controlValid = true;
 
-        udpClient.BeginReceive(new AsyncCallback(udpReceive), null);
+        udpClient.BeginReceive (new AsyncCallback (udpReceive), null);
     }
 
-    // Broadcast the controller parameters
-    public void sendControllerDetails(ControllerDetails details)
+    // Broadcast the controller parameters. 
+    public void sendControllerDetails (ControllerDetails details)
     {
-        byte[] data = details.serialize();
-        udpClient.Send(data, data.Length, hostAddress, port);
+        byte [] data = details.serialize ();
+        udpClient.Send(data, data.Length, "255.255.255.255", port);
     }
 }

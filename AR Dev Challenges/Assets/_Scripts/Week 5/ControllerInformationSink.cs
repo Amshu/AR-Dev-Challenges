@@ -26,25 +26,29 @@ public class ControllerInformationSink : MonoBehaviour
 
     void Update()
     {
+        Debug.Log("Getting Controller Details");
         ControllerDetails cd = dc.receiveControllerDetails();
-        
+
         //decay hiss so it stops if no button is pressed.
         hiss.volume *= 0.9f;
 
-        if (cd != null)
+        if ((cd != null))
         {
+            Debug.Log("CD is working");
             // calculate the rotation to cancel out the current pose
             if (cd.center)
             {
+                Debug.Log("Center Pressed");
                 centeredAttitude = Quaternion.Inverse(Quaternion.Euler(90, 0, 90) 
-                                    * new Quaternion(cd.gyrox, cd.gyroy, cd.gyroz, cd.gyrow)
-                                    * Quaternion.Euler(180, 180, 0));
+                    * new Quaternion(cd.gyrox, cd.gyroy, cd.gyroz, cd.gyrow) 
+                    * Quaternion.Euler(180, 180, 0));
             }
 
             // make the laser beam active if the trigger is pressed
             laserbeam.SetActive(cd.trigger);
             if (cd.trigger)
             {
+                Debug.Log("Trigger Pressed");
                 // Raycast, inflate, explode
                 RaycastHit hit;
                 if ((Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity)) &&
